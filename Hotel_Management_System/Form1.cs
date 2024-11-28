@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AMRConnector;
+using System;
 using System.Windows.Forms;
-using AMRConnector;
 
 namespace Hotel_Management_System
 {
     public partial class FormLogin : Form
     {
+        private DbConnector db;
 
-        DbConnector db;
         public FormLogin()
         {
             InitializeComponent();
@@ -23,7 +16,6 @@ namespace Hotel_Management_System
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
         }
 
         private void pictureBoxMinimzed_MouseHover(object sender, EventArgs e)
@@ -73,21 +65,25 @@ namespace Hotel_Management_System
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             bool check = db.IsValidNamePass(textBoxUsername.Text.Trim(), textBoxPassword.Text.Trim());
-            if (textBoxUsername.Text.Trim() == string.Empty || textBoxPassword.Text.Trim() == string.Empty)
-                MessageBox.Show("Please fill out all field", "Required field", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            else
+
+            if (!check)
             {
-                if (check)
-                {
-                    FormDashboard fd = new FormDashboard();
-                    fd.Username = textBoxUsername.Text;
-                    textBoxUsername.Clear();
-                    textBoxPassword.Clear() ;
-                    fd.Show();
-                }
-                else
-                    MessageBox.Show("Invalid Username Or Password", "Username Or Password", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            };
+                MessageBox.Show("Invalid Username Or Password", "Username Or Password", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (textBoxUsername.Text.Trim() == string.Empty || textBoxPassword.Text.Trim() == string.Empty)
+            {
+                MessageBox.Show("Please fill out all field", "Required field", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            textBoxUsername.Clear();
+            textBoxPassword.Clear();
+
+            FormDashboard fd = new FormDashboard();
+            fd.Username = textBoxUsername.Text;
+            fd.Show();
         }
     }
 }
